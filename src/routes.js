@@ -1,5 +1,5 @@
+const UserController = require('./controllers/user');
+
 module.exports = app => {
-    app.get('/', (req, res) => {
-        res.send('Hello World!');
-    });
+    app.post('/users', UserController.store);
 }

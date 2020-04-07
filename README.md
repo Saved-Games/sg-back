@@ -15,7 +15,7 @@ Valida as requisições dos usuários bem como regras de autenticação e autori
 
 ## Models
 
-Regras de negócio. 
+Leitura, escrita e validação dos dados. Nesta camada são implementadas as regras de negócios.
 
 ## Services
 
@@ -24,6 +24,22 @@ Utilitários, funções e códigos reutilizados por mais classes da aplicação.
 ## Routes
 
 Rotas referentes a aplicação.
+
+## Database
+
+## Migrations
+
+Versionamento das tabelas do BD, nela consta o código da criação da tabela do banco.
+
+sequelize migration:create --name create-users
+
+## Criação da tabela no banco
+
+sequelize db:migrate
+
+## Model do Sequelize
+
+É a representação da tabela do banco de dados.
 
 ## Dev server
 
