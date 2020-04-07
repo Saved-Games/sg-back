@@ -1,15 +1,33 @@
 const { User } = require('../database/models');
+const utilities = require('../services/utilities');
 
 class UserModel {
 
-    async store(userData, res) {
-        try {
-            const user = await User.create(userData);
+    store(userData, res) {
+        utilities.crypt(userData.password)
+            .then(response => {
+                let cryptedPass = response;
+                const userObj = { ...userData, password: cryptedPass };
 
-            return res.json(user);
-        } catch (err) {
-            return res.status(400).json({ error: err.message });
-        }
+                new Promise((resolve, reject) => {
+                    User.create(userObj)
+                        .then(response => {
+                            resolve(
+                                res.status(200).json({
+                                    success: true,
+                                    message: 'Usuário criado com sucesso'
+                                })
+                            );
+                        })
+                        .catch(err => {
+                            reject(res.status(400).json({ error: err.message }));
+                        })
+                })
+
+            })
+            .catch(err => {
+                return res.status(400).json({ error: err.message });
+            })
     }
 }
 

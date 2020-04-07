@@ -1,12 +1,12 @@
 module.exports = {
 
   development: {
-    dialect: process.env.DIALECT,
+    dialect: 'mysql',
     host: process.env.HOST,
     port: process.env.PORT,
-    username: process.env.USER,
+    username: 'root',
     password: process.env.PASSWORD,
-    database: process.env.DATABASE,
+    database: 'sg_db',
     operatorAliases: false,
     define: {
       timestamps: true,

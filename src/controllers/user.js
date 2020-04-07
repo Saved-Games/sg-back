@@ -7,6 +7,7 @@ class UserController {
         const user = req.body;
         let errors = [];
 
+        // #region validação
         if (!user.name || typeof user.name == undefined || user.name == null) {
             errors.push({
                 message: 'Nome inválido'
