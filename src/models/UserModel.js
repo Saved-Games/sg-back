@@ -8,26 +8,28 @@ class UserModel {
             .then(response => {
                 let cryptedPass = response;
                 const userObj = { ...userData, password: cryptedPass };
-
-                new Promise((resolve, reject) => {
-                    User.create(userObj)
-                        .then(response => {
-                            resolve(
-                                res.status(200).json({
-                                    success: true,
-                                    message: 'Usuário criado com sucesso'
-                                })
-                            );
-                        })
-                        .catch(err => {
-                            reject(res.status(400).json({ error: err.message }));
-                        })
-                })
-
+                this.createUserPromise(userObj, res);
             })
             .catch(err => {
                 return res.status(400).json({ error: err.message });
             })
+    }
+
+    createUserPromise(user, res) {
+        new Promise((resolve, reject) => {
+            User.create(user)
+                .then(response => {
+                    resolve(
+                        res.status(200).json({
+                            success: true,
+                            message: 'Usuário criado com sucesso'
+                        })
+                    );
+                })
+                .catch(err => {
+                    reject(res.status(400).json({ error: err.message }));
+                })
+        })
     }
 }
 
