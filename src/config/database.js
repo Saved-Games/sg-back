@@ -2,10 +2,10 @@ module.exports = {
 
   development: {
     dialect: 'mysql',
-    host: process.env.HOST,
-    port: process.env.PORT,
+    host: '127.0.0.1',
+    port: 3306,
     username: 'root',
-    password: process.env.PASSWORD,
+    password: '',
     database: 'sg_db',
     operatorAliases: false,
     define: {
