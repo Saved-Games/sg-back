@@ -4,11 +4,11 @@ module.exports = (sequelize, DataTypes) => {
         name: DataTypes.STRING,
         email: {
             type: DataTypes.STRING,
-            validate: {
-                isEmail: true,
-            },
         },
         password: {
+            type: DataTypes.STRING,
+        },
+        username: {
             type: DataTypes.STRING,
         },
         createdAt: {
