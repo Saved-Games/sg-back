@@ -7,7 +7,7 @@ class IGDBApiService {
     async getAllGames(page, res) {
         let self = new IGDBApiService();
         page = page * 10;
-        let request = self.createResquestToIGDB('games', 'POST', 'application/json', `fields *; limit 10; offset ${page};`);
+        let request = self.createResquestToIGDB('games', 'POST', 'application/json', `fields *; limit 55; offset ${page};`);
         let $games = await axios(request).then((response) => response.data);
         let games = await Promise.all($games.map(async game => {
             if (game !== undefined) {
@@ -31,10 +31,14 @@ class IGDBApiService {
             }
         }));
         return res.status(200).json({
-            page: (page / 10),
-            total: 5000,
-            limit: 10,
-            games: await games
+            status: 200,
+            message: 'Get all games with success',
+            body: await games,
+            pageable: {
+                page: (page / 10),
+                total: 5000,
+                limit: 10
+            }
         });
     }
 
