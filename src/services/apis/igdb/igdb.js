@@ -1,22 +1,44 @@
 var axios = require('axios');
+const Game = require('../../../domains/Game');
+const ResponseJSON = require('../../../domains/ResponseJSON');
 const COVERS = 'https://api-v3.igdb.com/covers';
 
 class IGDBApiService {
-
-    async getAllGames() {
+    async getAllGames(page, res) {
         let self = new IGDBApiService();
-        let request = self.createResquestToIGDB('games', 'POST', 'application/json', `fields *; limit 5;`);
-        let games = await axios(request).then((response) => response.data);
-        games = map(async game => {
-            await self.getCoverByID(game.cover).then((response) => {
-                game.url = response.data[0].url;
-            });
+        page = page * 10;
+        let request = self.createResquestToIGDB('games', 'POST', 'application/json', `fields *; limit 10; offset ${page};`);
+        let $games = await axios(request).then((response) => response.data);
+        let games = await Promise.all($games.map(async game => {
+            if (game !== undefined) {
+                return await self.getCoverByID(game.cover).then((response) => {
+                    let obj = new Game(game.id,
+                        game.category,
+                        response.data[0].url,
+                        game.name,
+                        game.rating,
+                        game.summary);
+                    return obj;
+                }).catch(() => {
+                    let obj = new Game(game.id,
+                        game.category,
+                        null,
+                        game.name,
+                        game.rating,
+                        game.summary);
+                    return obj;
+                });
+            }
+        }));
+        return res.status(200).json({
+            page: (page / 10),
+            total: 5000,
+            limit: 10,
+            games: await games
         });
-        await games;
-        console.log(games);
     }
 
-    getCoverByID(id) {
+    async getCoverByID(id) {
         let self = new IGDBApiService();
         let request = self.createResquestToIGDB('covers', undefined, undefined, `where id = ${id}; fields *;`);
         return axios(request);
@@ -34,23 +56,5 @@ class IGDBApiService {
         };
     }
 }
-
-
-
-// axios({
-//     url: "https://api-v3.igdb.com/achievements",
-//     method: 'POST',
-//     headers: {
-//         'Accept': 'application/json',
-//         'user-key': API_KEY
-//     },
-//     data: "fields achievement_icon,category,created_at,description,external_id,game,language,locked_achievement_icon,name,owners,owners_percentage,rank,slug,tags,updated_at;"
-//   })
-//     .then(respons => {
-//         console.loeg(response.data);
-//     })
-//     .catch(err => {
-//         console.error(err);
-//     });
 
 module.exports = new IGDBApiService;
