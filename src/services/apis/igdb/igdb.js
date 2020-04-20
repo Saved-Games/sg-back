@@ -4,10 +4,10 @@ const ResponseJSON = require('../../../domains/ResponseJSON');
 const COVERS = 'https://api-v3.igdb.com/covers';
 
 class IGDBApiService {
-    async getAllGames(page, res) {
+    async getAllGames(page, limit, res) {
         let self = new IGDBApiService();
-        page = page * 10;
-        let request = self.createResquestToIGDB('games', 'POST', 'application/json', `fields *; limit 55; offset ${page};`);
+        page = page * limit;
+        let request = self.createResquestToIGDB('games', 'POST', 'application/json', `fields *; limit ${limit}; offset ${page};`);
         let $games = await axios(request).then((response) => response.data);
         let games = await Promise.all($games.map(async game => {
             if (game !== undefined) {
@@ -35,9 +35,9 @@ class IGDBApiService {
             message: 'Get all games with success',
             body: await games,
             pageable: {
-                page: (page / 10),
+                page: (page / limit),
                 total: 5000,
-                limit: 10
+                limit: limit
             }
         });
     }
@@ -48,10 +48,10 @@ class IGDBApiService {
         return axios(request);
     }
 
-    async getGameByName(name, page, res) {
+    async getGameByName(name, page, limit, res) {
         let self = new IGDBApiService();
-        page = page * 10;
-        let request = self.createResquestToIGDB('games', 'POST', 'application/json', `search "${name}"; fields *; limit 10; offset ${page};`);
+        page = page * limit;
+        let request = self.createResquestToIGDB('games', 'POST', 'application/json', `search "${name}"; fields *; limit ${limit}; offset ${page};`);
         let $games = await axios(request).then((response) => response.data);
         let games = await Promise.all($games.map(async game => {
             if (game !== undefined) {
@@ -75,9 +75,9 @@ class IGDBApiService {
             }
         }));
         return res.status(200).json({
-            page: (page / 10),
+            page: (page / limit),
             total: 5000,
-            limit: 10,
+            limit: limit,
             games: await games
         });
     }

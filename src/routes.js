@@ -5,7 +5,7 @@ module.exports = app => {
     app.get('/igdb/all-games', async function (req, res) {
         var page = req.query.page;
         var limit = req.query.limit;
-        return IGDB.getAllGames(page, res);
+        return IGDB.getAllGames(page, limit, res);
     });
 
     app.get('/igdb/game/name/:name', async function (req, res) {
